@@ -1,0 +1,360 @@
+﻿<!DOCTYPE html>
+<ht<!DOCTYPE html>
+<html>
+<head>
+<title>Infinite Math RPG</title>
+<style>
+body{
+   margin:0;
+   font-family: Arial;
+   background:#101020;
+   color:white;
+   overflow:hidden;
+}
+#gameCanvas{
+   background:#101020;
+   display:block;
+   margin:0 auto;
+}
+#ui{
+   position:absolute;
+   top:10px;
+   left:50%;
+   transform:translateX(-50%);
+   text-align:center;
+}
+input{
+   font-size:20px;
+   width:100px;
+}
+button{
+   font-size:16px;
+   padding:5px 10px;
+   margin-left:10px;
+}
+</style>
+</head>
+<body>
+
+
+<canvas id="gameCanvas" width="800" height="500"></canvas>
+
+
+<div id="ui">
+<h2>Score: <span id="score">0</span> | Level: <span id="level">1</span> | Coins: <span id="coins">0</span></h2>
+<input id="answer" placeholder="answer">
+<button onclick="submitAnswer()">Submit</button>
+<button onclick="buyUpgrade()">Buy Upgrade (10 coins)</button>
+</div>
+
+
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+
+let score = 0;
+let level = 1;
+let coins = 0;
+let playerSpeed = 20;
+let enemy = {};
+let answer;
+
+
+// Player
+let player = {x:50, y:450, w:40, h:40, color:"#0f0"};
+
+
+function randomEnemyProblem(){
+   level = Math.floor(score/5)+1;
+   enemy.x = Math.random()*700 + 50;
+   enemy.y = 50;
+   enemy.size = 50;
+  
+   let a = Math.floor(Math.random()*level*5)+1;
+   let b = Math.floor(Math.random()*level*5)+1;
+   let type = Math.min(level,15);
+  
+   if(type<3){
+       enemy.op="+";
+       enemy.val = a+b;
+   } else if(type<6){
+       enemy.op="-";
+       enemy.val = a-b;
+   } else if(type<10){
+       enemy.op="×";
+       enemy.val = a*b;
+   } else if(type<13){
+       enemy.op="÷";
+       b = Math.floor(Math.random()*5+1);
+       enemy.val = a;
+       a = enemy.val*b;
+       enemy.val = a/b;
+   } else {
+       // Algebra: solve for x
+       let x = Math.floor(Math.random()*10+1);
+       a = Math.floor(Math.random()*10+1);
+       b = a*x + Math.floor(Math.random()*5);
+       enemy.op = "x";
+       enemy.text = `Solve: ${a}x + ${b-a*x} = ${b}`;
+       enemy.val = x;
+       return;
+   }
+  
+   enemy.text = `${a} ${enemy.op} ${b}`;
+   answer = enemy.val;
+}
+
+
+function draw(){
+   ctx.clearRect(0,0,canvas.width,canvas.height);
+  
+   // Draw player
+   ctx.fillStyle = player.color;
+   ctx.fillRect(player.x, player.y, player.w, player.h);
+  
+   // Draw enemy
+   ctx.fillStyle="#f00";
+   ctx.fillRect(enemy.x, enemy.y, enemy.size, enemy.size);
+   ctx.fillStyle="#fff";
+   ctx.font="18px Arial";
+   ctx.fillText(enemy.text, enemy.x+5, enemy.y+30);
+  
+   // Move enemy down
+   enemy.y += 1 + level*0.2;
+  
+   // Collision
+   if(enemy.y + enemy.size > player.y && enemy.x < player.x + player.w && enemy.x + enemy.size > player.x){
+       alert(`Game Over! Final Score: ${score}, Coins: ${coins}`);
+       score=0;
+       coins=0;
+       playerSpeed=20;
+       randomEnemyProblem();
+   }
+  
+   requestAnimationFrame(draw);
+}
+
+
+function submitAnswer(){
+   let user = Number(document.getElementById("answer").value);
+   if(user===answer){
+       score++;
+       coins++;
+       document.getElementById("score").innerText=score;
+       document.getElementById("level").innerText=level;
+       document.getElementById("coins").innerText=coins;
+       randomEnemyProblem();
+   }
+   document.getElementById("answer").value="";
+}
+
+
+// Buy upgrades
+function buyUpgrade(){
+   if(coins>=10){
+       playerSpeed +=5;
+       coins -=10;
+       document.getElementById("coins").innerText=coins;
+       alert("Upgrade purchased! Player moves faster!");
+   } else {
+       alert("Not enough coins!");
+   }
+}
+
+
+// Move player
+document.addEventListener("keydown", e=>{
+   if(e.key==="ArrowLeft") player.x -=playerSpeed;
+   if(e.key==="ArrowRight") player.x +=playerSpeed;
+   if(player.x<0) player.x=0;
+   if(player.x>canvas.width-player.w) player.x=canvas.width-player.w;
+});
+
+
+randomEnemyProblem();
+draw();
+</script>
+
+
+</body>
+</html>
+ml>
+<head>
+<title>Infinite Math RPG</title>
+<style>
+body{
+    margin:0;
+    font-family: Arial;
+    background:#101020;
+    color:white;
+    overflow:hidden;
+}
+#gameCanvas{
+    background:#101020;
+    display:block;
+    margin:0 auto;
+}
+#ui{
+    position:absolute;
+    top:10px;
+    left:50%;
+    transform:translateX(-50%);
+    text-align:center;
+}
+input{
+    font-size:20px;
+    width:100px;
+}
+button{
+    font-size:16px;
+    padding:5px 10px;
+    margin-left:10px;
+}
+</style>
+</head>
+<body>
+
+
+<canvas id="gameCanvas" width="800" height="500"></canvas>
+
+
+<div id="ui">
+<h2>Score: <span id="score">0</span> | Level: <span id="level">1</span> | Coins: <span id="coins">0</span></h2>
+<input id="answer" placeholder="answer">
+<button onclick="submitAnswer()">Submit</button>
+<button onclick="buyUpgrade()">Buy Upgrade (10 coins)</button>
+</div>
+
+
+<script>
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
+
+
+let score = 0;
+let level = 1;
+let coins = 0;
+let playerSpeed = 20;
+let enemy = {};
+let answer;
+
+
+// Player
+let player = {x:50, y:450, w:40, h:40, color:"#0f0"};
+
+
+function randomEnemyProblem(){
+    level = Math.floor(score/5)+1;
+    enemy.x = Math.random()*700 + 50;
+    enemy.y = 50;
+    enemy.size = 50;
+    
+    let a = Math.floor(Math.random()*level*5)+1;
+    let b = Math.floor(Math.random()*level*5)+1;
+    let type = Math.min(level,15);
+    
+    if(type<3){
+        enemy.op="+";
+        enemy.val = a+b;
+    } else if(type<6){
+        enemy.op="-";
+        enemy.val = a-b;
+    } else if(type<10){
+        enemy.op="×";
+        enemy.val = a*b;
+    } else if(type<13){
+        enemy.op="÷";
+        b = Math.floor(Math.random()*5+1);
+        enemy.val = a;
+        a = enemy.val*b;
+        enemy.val = a/b;
+    } else {
+        // Algebra: solve for x
+        let x = Math.floor(Math.random()*10+1);
+        a = Math.floor(Math.random()*10+1);
+        b = a*x + Math.floor(Math.random()*5);
+        enemy.op = "x";
+        enemy.text = `Solve: ${a}x + ${b-a*x} = ${b}`;
+        enemy.val = x;
+        return;
+    }
+    
+    enemy.text = `${a} ${enemy.op} ${b}`;
+    answer = enemy.val;
+}
+
+
+function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    
+    // Draw player
+    ctx.fillStyle = player.color;
+    ctx.fillRect(player.x, player.y, player.w, player.h);
+    
+    // Draw enemy
+    ctx.fillStyle="#f00";
+    ctx.fillRect(enemy.x, enemy.y, enemy.size, enemy.size);
+    ctx.fillStyle="#fff";
+    ctx.font="18px Arial";
+    ctx.fillText(enemy.text, enemy.x+5, enemy.y+30);
+    
+    // Move enemy down
+    enemy.y += 1 + level*0.2;
+    
+    // Collision
+    if(enemy.y + enemy.size > player.y && enemy.x < player.x + player.w && enemy.x + enemy.size > player.x){
+        alert(`Game Over! Final Score: ${score}, Coins: ${coins}`);
+        score=0;
+        coins=0;
+        playerSpeed=20;
+        randomEnemyProblem();
+    }
+    
+    requestAnimationFrame(draw);
+}
+
+
+function submitAnswer(){
+    let user = Number(document.getElementById("answer").value);
+    if(user===answer){
+        score++;
+        coins++;
+        document.getElementById("score").innerText=score;
+        document.getElementById("level").innerText=level;
+        document.getElementById("coins").innerText=coins;
+        randomEnemyProblem();
+    }
+    document.getElementById("answer").value="";
+}
+
+
+// Buy upgrades
+function buyUpgrade(){
+    if(coins>=10){
+        playerSpeed +=5;
+        coins -=10;
+        document.getElementById("coins").innerText=coins;
+        alert("Upgrade purchased! Player moves faster!");
+    } else {
+        alert("Not enough coins!");
+    }
+}
+
+
+// Move player
+document.addEventListener("keydown", e=>{
+    if(e.key==="ArrowLeft") player.x -=playerSpeed;
+    if(e.key==="ArrowRight") player.x +=playerSpeed;
+    if(player.x<0) player.x=0;
+    if(player.x>canvas.width-player.w) player.x=canvas.width-player.w;
+});
+
+
+randomEnemyProblem();
+draw();
+</script>
+
+
+</body>
+</html>
